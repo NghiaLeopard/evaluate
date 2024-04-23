@@ -1,34 +1,44 @@
 package org.example;
 
-import org.junit.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class NextDateTest {
+
     @Test
-    public void testNextDateWithinMonth() {
-        assertEquals("2/5/2009", NextDate.getNextDate(1, 5, 2009));
+    public void testNextDate_EndOfMonth() {
+        assertArrayEquals(new int[]{1, 1, 2013}, NextDate.nextDate(31, 12, 2012));
     }
 
     @Test
-    public void testNextDateEndOfMonth() {
-        assertEquals("1/6/2000", NextDate.getNextDate(31, 5, 2000));
+    public void testNextDate_EndOfMonth_LeapYear() {
+        assertArrayEquals(new int[]{29, 2, 2020}, NextDate.nextDate(28, 2, 2020));
     }
 
     @Test
-    public void testNextDateEndOfYear() {
-        assertEquals("1/1/2004", NextDate.getNextDate(31, 12, 2003));
+    public void testNextDate_EndOfMonth_NotLeapYear() {
+        assertArrayEquals(new int[]{1, 3, 2019}, NextDate.nextDate(28, 2, 2019));
     }
 
     @Test
-    public void testNextDateLeapYear() {
-        assertEquals("29/2/2012", NextDate.getNextDate(28, 2, 2012));
-        assertEquals("1/3/2012", NextDate.getNextDate(29, 2, 2012));
-
+    public void testNextDate_NotEndOfMonth() {
+        assertArrayEquals(new int[]{2, 1, 2012}, NextDate.nextDate(1, 1, 2012));
     }
-    -*
+
     @Test
-    public void testNextDateNotATriangle() {
-        assertEquals("Không hợp lệ", NextDate.getNextDate(0, 5, 2024));
+    public void testNextDate_InvalidDate() {
+        assertThrows(IllegalArgumentException.class, () -> NextDate.nextDate(32, 1, 2012));
+    }
+
+    @Test
+    public void testNextDate_InvalidMonth() {
+        assertThrows(IllegalArgumentException.class, () -> NextDate.nextDate(1, 13, 2012));
+    }
+
+    @Test
+    public void testNextDate_InvalidYear() {
+        assertThrows(IllegalArgumentException.class, () -> NextDate.nextDate(1, 1, 1811));
     }
 }
+

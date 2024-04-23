@@ -1,26 +1,59 @@
 package org.example;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+
 public class NextDate {
     public static void main(String[] args) {
+        // Ví dụ sử dụng
         int day = 31;
         int month = 12;
         int year = 2012;
 
-        String nextDate = getNextDate(day, month, year);
-        System.out.println("Ngày kế tiếp là: " + nextDate);
+        int[] nextDate = nextDate(day, month, year);
+        System.out.println("Ngày kế tiếp: " + nextDate[0] + "/" + nextDate[1] + "/" + nextDate[2]);
     }
 
-    public static String getNextDate(int day, int month, int year) {
-        if(day>31 || day<1 || month>12 || day <1 || year >2012 || year < 1812){
-            return "Không hợp lệ";        }
-        Calendar calendar = new GregorianCalendar(year, month - 1, day);
-        calendar.add(calendar.DAY_OF_MONTH, 1);
+    public static int[] nextDate(int day, int month, int year) {
+        // Kiểm tra tính hợp lệ của ngày, tháng, năm
+        if (day <= 0 || day > 31 || month <= 0 || month > 12 || year < 1812 || year > 2012) {
+            throw new IllegalArgumentException("Ngày, tháng, năm không hợp lệ.");
+        }
 
-        int nextDay = calendar.get(calendar.DAY_OF_MONTH);
-        int nextMonth = calendar.get(calendar.MONTH) + 1;
-        int nextYear = calendar.get(calendar.YEAR);
+        // Xác định ngày kế tiếp
+        int nextDate = day;
+        int nextMonth = month;
+        int nextYear = year;
 
-        return nextDay + "/" + nextMonth + "/" + nextYear;
+        // Xử lý trường hợp cuối tháng
+        if (day == 31) {
+            if (month == 12) {
+                nextDate = 1;
+                nextMonth = 1;
+                nextYear++;
+            } else {
+                nextDate = 1;
+                nextMonth++;
+            }
+        } else if (day == 30 && (month == 4 || month == 6 || month == 9 || month == 11)) {
+            nextDate = 1;
+            nextMonth++;
+        } else if (day == 28 && month == 2) {
+            if (isLeapYear(year)) {
+                nextDate = 29;
+            } else {
+                nextDate = 1;
+                nextMonth = 3;
+            }
+        } else if (day == 29 && month == 2) {
+            nextDate = 1;
+            nextMonth = 3;
+        } else {
+            nextDate++;
+        }
+
+        return new int[]{nextDate, nextMonth, nextYear};
     }
+
+    private static boolean isLeapYear(int year) {
+        return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+    }
+
 }
